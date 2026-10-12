@@ -1,5 +1,5 @@
 # Important Requirements here.
-telethon>=1.44.0
+telethon==1.44.0
 gitpython>=3.1.52
 https://github.com/New-dev0/Telethon-Patch/archive/main.zip
 python-decouple>=3.8
