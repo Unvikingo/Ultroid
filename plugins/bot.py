@@ -113,7 +113,14 @@ async def lol(ult):
         pic = choice(pic)
     uptime = time_formatter((time.time() - start_time) * 1000)
     header = udB.get_key("ALIVE_TEXT") or get_string("bot_1")
-    y = Repo().active_branch
+
+    y = "main"
+    rep = "https://github.com/Unvikingo/Ultroid/tree/main"
+    kk = f" `[ {y} ]({rep})` "
+    if inline:
+        kk = f'<a href="{rep}">{y}</a>'
+        parse = "html"
+
     xx = Repo().remotes[0].config_reader.get("url")
     rep = xx.replace(".git", f"/tree/{y}")
     kk = f" `[{y}]({rep})` "
