@@ -89,18 +89,16 @@ in_alive = "{}\n\n🌀 <b>Ultroid Version -><b> <code>{}</code>\n🌀 <b>PyUltro
 
 @callback("alive")
 async def alive(event):
-    text = alive_txt.format(ultroid_version, UltVer, __version__)
-    await event.answer(text, alert=True)
 
+y = "main"
+rep = "https://github.com/Unvikingo/Ultroid/tree/main"
+parse = "md"
+kk = f"[{y}]({rep})"
 
-@ultroid_cmd(
-    pattern="alive( (.*)|$)",
-)
-async def lol(ult):
-    match = ult.pattern_match.group(1).strip()
-    inline = None
-    if match in ["inline", "i"]:
-        try:
+if inline:
+    kk = f'<a href="{rep}">{y}</a>'
+    parse = "html"
+
             res = await ult.client.inline_query(asst.me.username, "alive")
             return await res[0].click(ult.chat_id)
         except BotMethodInvalidError:
@@ -114,19 +112,7 @@ async def lol(ult):
     uptime = time_formatter((time.time() - start_time) * 1000)
     header = udB.get_key("ALIVE_TEXT") or get_string("bot_1")
 
-    y = "main"
-    rep = "https://github.com/Unvikingo/Ultroid/tree/main"
-    kk = f" `[ {y} ]({rep})` "
-    if inline:
-        kk = f'<a href="{rep}">{y}</a>'
-        parse = "html"
 
-    xx = Repo().remotes[0].config_reader.get("url")
-    rep = xx.replace(".git", f"/tree/{y}")
-    kk = f" `[{y}]({rep})` "
-    if inline:
-        kk = f"<a href={rep}>{y}</a>"
-        parse = "html"
         als = in_alive.format(
             header,
             f"{ultroid_version} [{HOSTED_ON}]",
