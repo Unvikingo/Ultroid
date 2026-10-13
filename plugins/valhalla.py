@@ -28,6 +28,4 @@ async def valhalla(event):
         )
         await event.delete()
     except Exception:
-        await event.eor(
-            "No se pudo enviar la imagen del Valhalla."
-        )
+        await event.eor("Error al enviar la imagen.")
