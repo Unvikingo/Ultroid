@@ -1,5 +1,5 @@
 
-from pyUltroid.fns.helper import ultroid_cmd
+
 
 VIKING_IMAGE = (
     "https://raw.githubusercontent.com/Unvikingo/Ultroid/"
