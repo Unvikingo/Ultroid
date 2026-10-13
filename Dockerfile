@@ -11,7 +11,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY installer.sh .
 
+
 RUN bash installer.sh
+COPY addons/ /root/TeamUltroid/addons/
 
 # changing workdir
 WORKDIR "/root/TeamUltroid"
