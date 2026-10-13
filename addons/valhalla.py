@@ -29,3 +29,22 @@ async def valhalla(event):
         await event.delete()
     except Exception:
         await event.eor("Error al enviar la imagen.")
+
+@ultroid_cmd(pattern="rey$")
+async def rey(event):
+    try:
+        await event.client.send_file(
+            event.chat_id,
+            VIKING_IMAGE,
+            caption=(
+                "👑 EL REY HA LLEGADO 👑\n\n"
+                "⚔️ El trono tiene dueño.\n"
+                "🐺 Los lobos conocen a su rey.\n"
+                "🔥 El Valhalla reconoce mi presencia.\n\n"
+                "⚡ EL VIKINGO ⚡"
+            ),
+            reply_to=event.id,
+        )
+        await event.delete()
+    except Exception:
+        await event.eor("Error al enviar la imagen del rey.")
