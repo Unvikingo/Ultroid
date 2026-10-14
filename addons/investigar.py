@@ -13,7 +13,11 @@ async def investigar(event):
     try:
         usuario = await event.client.get_entity(objetivo.strip())
 
-        if not isinstance(usuario, User):
+    await event.eor(
+    f"🔎 Diagnóstico: {type(usuario).__name__}"
+)
+
+     if not isinstance(usuario, User):
             return await event.eor(
                 "🔎 Este perfil es un canal o grupo, no un usuario."
             )
