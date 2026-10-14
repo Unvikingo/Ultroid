@@ -16,10 +16,12 @@ async def investigar(event):
             objetivo.strip()
         )
 
-        if not hasattr(usuario, "first_name"):
-            return await event.eor(
-                "No se encontró una cuenta de usuario."
-            )
+        from telethon.tl.types import User
+
+if not isinstance(usuario, User):
+    return await event.eor(
+        "🔎 Este perfil es un canal o grupo, no un usuario."
+    )
 
         nombre = " ".join(
             filter(None, [
