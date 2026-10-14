@@ -1,4 +1,5 @@
 
+
 from telethon.tl.types import User
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.errors import RPCError
@@ -13,13 +14,12 @@ async def investigar(event):
     try:
         usuario = await event.client.get_entity(objetivo.strip())
 
-    await event.eor(
-    f"🔎 Diagnóstico: {type(usuario).__name__}"
-)
+        # Diagnóstico temporal
+        tipo = type(usuario).__name__
 
-     if not isinstance(usuario, User):
+        if not isinstance(usuario, User):
             return await event.eor(
-                "🔎 Este perfil es un canal o grupo, no un usuario."
+                f"🔎 Telegram devolvió: {tipo}"
             )
 
         nombre = " ".join(
@@ -54,5 +54,6 @@ async def investigar(event):
 
     except (ValueError, RPCError) as error:
         await event.eor(
-            f"❌ No se pudo consultar el perfil: {type(error).__name__}"
+            f"❌ Error: {type(error).__name__}"
         )
+
