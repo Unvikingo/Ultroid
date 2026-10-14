@@ -13,7 +13,11 @@ async def investigar(event):
 
     try:
         usuario = await event.client.get_entity(objetivo.strip())
-
+return await event.eor(
+    f"🔎 Busqué: {objetivo!r}\n"
+    f"📌 Encontré: {getattr(usuario, 'username', None)}\n"
+    f"📂 Tipo: {type(usuario).__name__}"
+)
         # Diagnóstico temporal
         tipo = type(usuario).__name__
 
