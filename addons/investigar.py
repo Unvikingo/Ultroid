@@ -1,4 +1,5 @@
 
+from telethon.tl.types import User
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.errors import RPCError
 
@@ -7,27 +8,18 @@ async def investigar(event):
     objetivo = event.pattern_match.group(1)
 
     if not objetivo:
-        return await event.eor(
-            "🔎 Uso: .investigar @usuario"
-        )
+        return await event.eor("🔎 Uso: .investigar @usuario")
 
     try:
-        usuario = await event.client.get_entity(
-            objetivo.strip()
-        )
+        usuario = await event.client.get_entity(objetivo.strip())
 
-        from telethon.tl.types import User
-
-if not isinstance(usuario, User):
-    return await event.eor(
-        "🔎 Este perfil es un canal o grupo, no un usuario."
-    )
+        if not isinstance(usuario, User):
+            return await event.eor(
+                "🔎 Este perfil es un canal o grupo, no un usuario."
+            )
 
         nombre = " ".join(
-            filter(None, [
-                usuario.first_name,
-                usuario.last_name
-            ])
+            filter(None, [usuario.first_name, usuario.last_name])
         )
 
         username = (
@@ -56,7 +48,7 @@ if not isinstance(usuario, User):
 
         await event.eor(mensaje)
 
-    except (ValueError, RPCError):
+    except (ValueError, RPCError) as error:
         await event.eor(
-            "❌ No se pudo consultar ese perfil."
+            f"❌ No se pudo consultar el perfil: {type(error).__name__}"
         )
