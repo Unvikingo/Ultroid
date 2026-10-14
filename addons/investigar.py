@@ -3,6 +3,9 @@
 
 
 
+
+import io
+
 from telethon.tl.functions.contacts import ResolveUsernameRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.functions.channels import GetFullChannelRequest
@@ -34,19 +37,29 @@ async def investigar(event):
         entidad = None
 
         for usuario in resultado.users:
-            if (usuario.username or "").lower() == username.lower():
+            if (
+                (usuario.username or "").lower()
+                == username.lower()
+            ):
                 entidad = usuario
                 break
 
         if entidad is None:
             for canal in resultado.chats:
-                if (getattr(canal, "username", None) or "").lower() == username.lower():
+                canal_username = getattr(
+                    canal, "username", None
+                )
+
+                if (
+                    (canal_username or "").lower()
+                    == username.lower()
+                ):
                     entidad = canal
                     break
 
         if entidad is None:
             return await event.eor(
-                "❌ No se encontró un perfil con ese username."
+                "❌ No se encontró ese perfil."
             )
 
         bio = "No disponible"
@@ -101,14 +114,23 @@ async def investigar(event):
             "🐺 ARCHIVOS DEL VIKINGO 🐺"
         )
 
-        # Intentar enviar foto y ficha juntas
+        # Descargar la foto accesible del perfil
+        foto_bytes = None
+
         try:
-            foto = await event.client.download_profile_photo(
+            foto_bytes = await event.client.download_profile_photo(
                 entidad,
                 file=bytes
             )
+        except (RPCError, ValueError, TypeError):
+            pass
 
-            if foto:
+        # Enviar foto como imagen JPEG
+        if foto_bytes:
+            try:
+                foto = io.BytesIO(foto_bytes)
+                foto.name = "perfil.jpg"
+
                 await event.client.send_file(
                     event.chat_id,
                     foto,
@@ -116,13 +138,14 @@ async def investigar(event):
                     force_document=False,
                     reply_to=event.id
                 )
+
                 await event.delete()
                 return
 
-        except (RPCError, ValueError, TypeError):
-            pass
+            except (RPCError, ValueError, TypeError):
+                pass
 
-        # Si no hay foto accesible, enviar solo texto
+        # Si no hay foto, enviar la ficha en texto
         await event.eor(mensaje)
 
     except RPCError as error:
@@ -135,68 +158,6 @@ async def investigar(event):
             f"❌ Error: {type(error).__name__}"
         )
 
-
-        # Buscar el usuario correspondiente
-        usuario = next(
-            (
-                u for u in resultado.users
-                if (u.username or "").lower() == username.lower()
-            ),
-            None
-        )
-
-        if usuario is None:
-            if resultado.chats:
-                return await event.eor(
-                    "🔎 Ese username corresponde a un canal o grupo."
-                )
-
-            return await event.eor(
-                "❌ No se encontró ese usuario."
-            )
-
-        if not isinstance(usuario, User):
-            return await event.eor(
-                "❌ La entidad encontrada no es un usuario."
-            )
-
-        nombre = " ".join(
-            filter(None, [
-                usuario.first_name,
-                usuario.last_name
-            ])
-        ) or "No disponible"
-
-        bio = "No disponible"
-
-        try:
-            completo = await event.client(
-                GetFullUserRequest(usuario)
-            )
-            bio = completo.full_user.about or bio
-        except RPCError:
-            pass
-
-        mensaje = (
-            "⚔️ INVESTIGACIÓN DEL VALHALLA ⚔️\n\n"
-            f"👤 Nombre: {nombre}\n"
-            f"🆔 ID: {usuario.id}\n"
-            f"🔗 Username: @{usuario.username}\n"
-            f"🤖 Bot: {'Sí' if usuario.bot else 'No'}\n"
-            f"📝 Biografía: {bio}\n\n"
-            "🐺 ARCHIVOS DEL VIKINGO 🐺"
-        )
-
-        await event.eor(mensaje)
-
-    except (ValueError, RPCError) as error:
-        await event.eor(
-            f"❌ Error de Telegram: {type(error).__name__}"
-        )
-    except Exception as error:
-        await event.eor(
-            f"❌ Error: {type(error).__name__}"
-        )
 
 
 
